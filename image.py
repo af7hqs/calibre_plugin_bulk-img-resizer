@@ -6,22 +6,18 @@ def compress_image(img_data, max_px_size, quality, encoding_type, algorithm, blu
     image = Image.open(io.BytesIO(img_data))
     w = float(image.size[0])
     h = float(image.size[1])
+    scale = w / h
     if w < h:
-        if w > max_px_size:
-            new_w = max_px_size
-            scale = max_px_size / w
-            new_h = h * scale
-        else:
-            new_h = h
-            new_w = w
-    else:
         if h > max_px_size:
             new_h = max_px_size
-            scale = max_px_size / h
-            new_w = w * scale
-        else:
-            new_h = h
-            new_w = w
+            new_w = new_h * scale
+    else if w > h:
+        if w > max_px_size:
+            new_w = max_px_size
+            new_h = new_w / scale
+    else:
+        new_h = h
+        new_w = w
 
     if blur_radius == 0:
         blurred_image = image
