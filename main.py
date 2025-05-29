@@ -93,14 +93,14 @@ class BulkImgReducer(Tool):
 
     def do_one(self):
         images, all_images, progress, container = self.job_data
-        max_resolution, quality, encoding_type = self.config
+        max_resolution, quality, encoding_type, algorithm, blur_radius = self.config
         if len(images) == 0 or progress.wasCanceled():
             self.pd_timer.stop()
             self.do_end()
             return
         name = images.pop()
         try:
-            new_image = compress_image(container.parsed(name), max_resolution, quality, encoding_type)
+            new_image = compress_image(container.parsed(name), max_resolution, quality, encoding_type, algorithm, blur_radius)
             container.replace(name, new_image)
         except Exception:
             import traceback
@@ -112,7 +112,7 @@ class BulkImgReducer(Tool):
         progress.setValue(index)
 
     def do_end(self):
-        _, _, encoding_type = self.config
+        _, _, encoding_type, algorithm, blur_radius = self.config
         _, all_images, progress, container = self.job_data
 
         progress.setWindowTitle('Renaming files...')
